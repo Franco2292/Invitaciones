@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cumple de Cris</title>
+<meta name="description" content="¡Confirmar asistencia!">
+
+<!-- Vista previa al compartir por WhatsApp -->
+<!-- Cambiá TU-USUARIO.github.io/TU-REPO por la dirección real donde publiques el archivo -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Cumple de Cris">
+<meta property="og:title" content="Cumple de Cris">
+<meta property="og:description" content="¡Confirmar asistencia!">
+<meta property="og:url" content="https://TU-USUARIO.github.io/TU-REPO/confirmacion.html">
+<meta property="og:image" content="https://TU-USUARIO.github.io/TU-REPO/preview-cris.jpg">
+<meta property="og:image:secure_url" content="https://TU-USUARIO.github.io/TU-REPO/preview-cris.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noche: #120a10;
+    --noche-2: #1d1019;
+    --rosa: #ff3d9a;
+    --rosa-suave: #ffb3d6;
+    --oro: #e8b94a;
+    --oro-oscuro: #8a6a1c;
+    --texto: #fbeef5;
+    --error: #ff8a8a;
+    --ok: #8ee6a8;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Lora", Georgia, serif;
+    color: var(--texto);
+    background:
+      radial-gradient(ellipse at 15% 0%, rgba(255,61,154,.22), transparent 55%),
+      radial-gradient(ellipse at 90% 100%, rgba(232,185,74,.16), transparent 50%),
+      var(--noche);
+    display: flex;
+    justify-content: center;
+    padding: 28px 16px 48px;
+  }
+  .tarjeta {
+    width: 100%;
+    max-width: 480px;
+    background: linear-gradient(180deg, var(--noche-2), var(--noche));
+    border: 1.5px solid var(--oro);
+    border-radius: 26px;
+    padding: 34px 24px 28px;
+    box-shadow: 0 0 0 5px rgba(232,185,74,.12), 0 20px 60px rgba(0,0,0,.6);
+    position: relative;
+  }
+  .nombre {
+    font-family: "Kaushan Script", cursive;
+    font-size: clamp(64px, 20vw, 92px);
+    line-height: 1;
+    margin: 0;
+    text-align: center;
+    color: var(--rosa);
+    text-shadow: 0 0 22px rgba(255,61,154,.55);
+  }
+  .lema {
+    font-family: "Kaushan Script", cursive;
+    text-align: center;
+    font-size: 26px;
+    margin: 6px 0 18px;
+    color: var(--rosa-suave);
+  }
+  .datos {
+    border: 1.5px solid var(--oro);
+    border-radius: 40px;
+    padding: 12px 16px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 14px;
+  }
+  .lugar { text-align: center; margin: 0 0 4px; font-family: "Kaushan Script", cursive; font-size: 26px; color: var(--rosa); }
+  .lugar-detalle { text-align: center; margin: 0 0 10px; font-size: 15px; color: var(--rosa-suave); }
+  .pedido { text-align: center; margin: 0 0 26px; color: var(--oro); font-size: 16px; line-height: 1.5; }
+
+  form { display: grid; gap: 18px; }
+  .campo { display: grid; gap: 7px; }
+  label, legend { font-size: 15px; font-weight: 600; color: var(--rosa-suave); padding: 0; }
+  fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 7px; }
+  input[type="text"], input[type="tel"], input[type="number"], textarea {
+    width: 100%;
+    font: inherit;
+    font-size: 17px;
+    color: var(--texto);
+    background: rgba(255,255,255,.06);
+    border: 1.5px solid rgba(255,179,214,.35);
+    border-radius: 14px;
+    padding: 13px 14px;
+  }
+  textarea { resize: vertical; min-height: 78px; }
+  input::placeholder, textarea::placeholder { color: rgba(251,238,245,.4); }
+  input:focus-visible, textarea:focus-visible, button:focus-visible, .opcion input:focus-visible + span {
+    outline: 3px solid var(--oro);
+    outline-offset: 2px;
+  }
+
+  .opciones { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .opcion { position: relative; }
+  .opcion input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .opcion span {
+    display: block;
+    text-align: center;
+    padding: 13px 8px;
+    border-radius: 14px;
+    border: 1.5px solid rgba(255,179,214,.35);
+    background: rgba(255,255,255,.04);
+    font-size: 16px;
+    transition: background .15s, border-color .15s, color .15s;
+  }
+  .opcion input:checked + span { background: var(--rosa); border-color: var(--rosa); color: #1a0613; font-weight: 600; }
+
+  .contador { display: flex; align-items: center; gap: 12px; }
+  .contador button {
+    width: 46px; height: 46px; border-radius: 50%;
+    border: 1.5px solid var(--oro); background: transparent; color: var(--oro);
+    font-size: 24px; line-height: 1; cursor: pointer;
+  }
+  .contador input { text-align: center; max-width: 90px; }
+  .ayuda { font-size: 13px; color: rgba(251,238,245,.6); margin: 0; }
+
+  .enviar {
+    margin-top: 6px;
+    font-family: "Kaushan Script", cursive;
+    font-size: 26px;
+    padding: 14px 18px;
+    border: 0;
+    border-radius: 16px;
+    cursor: pointer;
+    color: #1a0613;
+    background: linear-gradient(135deg, var(--rosa), #ff6fb5);
+    box-shadow: 0 8px 24px rgba(255,61,154,.35);
+  }
+  .enviar:disabled { opacity: .6; cursor: wait; }
+
+  .error { color: var(--error); font-size: 14px; min-height: 18px; margin: 0; }
+  .trampa { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  .final { display: none; text-align: center; padding: 10px 0 4px; }
+  .final.visible { display: block; }
+  .final h2 { font-family: "Kaushan Script", cursive; font-weight: 400; font-size: 38px; margin: 0 0 10px; color: var(--rosa); }
+  .final p { margin: 0 0 10px; line-height: 1.55; }
+  .final .antifaz { color: var(--oro); }
+  .final button { background: none; border: 0; color: var(--rosa-suave); text-decoration: underline; font: inherit; cursor: pointer; margin-top: 8px; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<main class="tarjeta">
+  <h1 class="nombre">CRIS</h1>
+  <p class="lema">¡Te invita a celebrar la vida!</p>
+
+  <div class="datos">21 de noviembre · 22:00 hs</div>
+  <p class="lugar">Pje. Solís 151</p>
+  <p class="lugar-detalle">El Colmenar, al costado de Gendarmería.</p>
+  <p class="pedido">Solo traé tu bebida y, como accesorio, ¡un antifaz!</p>
+
+  <form id="form" novalidate>
+    <div class="campo">
+      <label for="nombre">Nombre y apellido</label>
+      <input type="text" id="nombre" name="nombre" autocomplete="name" placeholder="Ej: Laura Gómez" maxlength="80" required>
+    </div>
+
+    <div class="campo">
+      <label for="telefono">Tu WhatsApp</label>
+      <input type="tel" id="telefono" name="telefono" autocomplete="tel" inputmode="tel" placeholder="Ej: 381 555 1234" maxlength="25" required>
+    </div>
+
+    <fieldset>
+      <legend>¿Venís a la fiesta?</legend>
+      <div class="opciones">
+        <label class="opcion"><input type="radio" name="asistencia" value="Sí" checked><span>¡Sí, voy!</span></label>
+        <label class="opcion"><input type="radio" name="asistencia" value="No"><span>No puedo</span></label>
+      </div>
+    </fieldset>
+
+    <div class="campo" id="bloquePersonas">
+      <label for="personas">¿Cuántas personas van, contándote a vos?</label>
+      <div class="contador">
+        <button type="button" id="menos" aria-label="Una persona menos">−</button>
+        <input type="number" id="personas" name="personas" value="1" min="1" max="10" inputmode="numeric">
+        <button type="button" id="mas" aria-label="Una persona más">+</button>
+      </div>
+      <p class="ayuda">Si vas con alguien, escribí sus nombres en el mensaje.</p>
+    </div>
+
+    <div class="campo">
+      <label for="mensaje">Mensaje para Cris (opcional)</label>
+      <textarea id="mensaje" name="mensaje" maxlength="300" placeholder="Nombres de tus acompañantes, un saludo…"></textarea>
+    </div>
+
+    <div class="trampa" aria-hidden="true">
+      <label for="web">No completar</label>
+      <input type="text" id="web" name="web" tabindex="-1" autocomplete="off">
+    </div>
+
+    <p class="error" id="error" role="alert"></p>
+    <button type="submit" class="enviar" id="enviar">¡Confirmá tu presencia!</button>
+  </form>
+
+  <section class="final" id="final" aria-live="polite">
+    <h2 id="finalTitulo"></h2>
+    <p id="finalTexto"></p>
+    <p class="antifaz" id="finalExtra"></p>
+    <button type="button" id="otra">Registrar otra confirmación</button>
+  </section>
+</main>
+
+<script>
+  // ▼▼ Pegá acá la URL de tu Apps Script (termina en /exec) ▼▼
+  const APPS_SCRIPT_URL = "PEGAR_URL_AQUI";
+
+  const $ = (id) => document.getElementById(id);
+  const form = $("form"), errorBox = $("error"), btn = $("enviar");
+
+  // Mostrar u ocultar la cantidad de personas según la respuesta
+  document.querySelectorAll('input[name="asistencia"]').forEach((r) =>
+    r.addEventListener("change", () => {
+      $("bloquePersonas").style.display = form.asistencia.value === "Sí" ? "" : "none";
+    })
+  );
+
+  // Contador de personas
+  const personas = $("personas");
+  const ajustar = (d) => { personas.value = Math.min(10, Math.max(1, (parseInt(personas.value) || 1) + d)); };
+  $("menos").addEventListener("click", () => ajustar(-1));
+  $("mas").addEventListener("click", () => ajustar(1));
+
+  function mostrarFinal(asiste, nombre) {
+    const primer = nombre.trim().split(/\s+/)[0];
+    form.style.display = "none";
+    $("final").classList.add("visible");
+    if (asiste) {
+      $("finalTitulo").textContent = "¡Te esperamos, " + primer + "!";
+      $("finalTexto").textContent = "Tu confirmación quedó registrada. Nos vemos el 21 de noviembre a las 22:00 hs en Pje. Solís 151.";
+      $("finalExtra").textContent = "No te olvides del antifaz y de tu bebida.";
+    } else {
+      $("finalTitulo").textContent = "Gracias por avisar, " + primer;
+      $("finalTexto").textContent = "Registramos que no podés venir. ¡Te vamos a extrañar!";
+      $("finalExtra").textContent = "";
+    }
+  }
+
+  $("otra").addEventListener("click", () => {
+    form.reset();
+    $("bloquePersonas").style.display = "";
+    form.style.display = "";
+    $("final").classList.remove("visible");
+    errorBox.textContent = "";
+    $("nombre").focus();
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    errorBox.textContent = "";
+
+    if ($("web").value) return; // antispam
+
+    const nombre = $("nombre").value.trim();
+    const telefono = $("telefono").value.trim();
+    const asistencia = form.asistencia.value;
+    const cant = asistencia === "Sí" ? Math.min(10, Math.max(1, parseInt(personas.value) || 1)) : 0;
+
+    if (nombre.length < 3) { errorBox.textContent = "Escribí tu nombre y apellido."; $("nombre").focus(); return; }
+    if (telefono.replace(/\D/g, "").length < 8) { errorBox.textContent = "Escribí un WhatsApp válido, con código de área."; $("telefono").focus(); return; }
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("PEGAR_URL")) { errorBox.textContent = "Falta configurar la URL del Apps Script en el HTML."; return; }
+
+    btn.disabled = true;
+    btn.textContent = "Enviando…";
+
+    const datos = { nombre, telefono, asistencia, personas: cant, mensaje: $("mensaje").value.trim() };
+
+    try {
+      // text/plain evita el preflight CORS; Apps Script igual recibe el JSON
+      await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(datos)
+      });
+      mostrarFinal(asistencia === "Sí", nombre);
+    } catch (err) {
+      errorBox.textContent = "No pudimos enviar tu confirmación. Revisá tu conexión y probá de nuevo.";
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "¡Confirmá tu presencia!";
+    }
+  });
+</script>
+</body>
+</html>
