@@ -156,6 +156,33 @@
   .final .antifaz { color: var(--oro); }
   .final button { background: none; border: 0; color: var(--rosa-suave); text-decoration: underline; font: inherit; cursor: pointer; margin-top: 8px; }
 
+
+  /* Flecha indicadora para bajar al botón */
+  .bajar {
+    position: fixed;
+    left: 50%;
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+    padding: 10px 26px 8px;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ff1f8e, #ff5eb0);
+    color: #fff;
+    font: inherit; font-size: 17px; font-weight: 700;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(0,0,0,.35);
+    cursor: pointer;
+    box-shadow: 0 0 0 4px rgba(255,31,142,.35), 0 0 28px rgba(255,31,142,.9), 0 8px 24px rgba(0,0,0,.7);
+    z-index: 10;
+    transition: opacity .25s;
+    animation: latido 1.6s ease-in-out infinite;
+  }
+  @keyframes latido { 0%,100% { box-shadow: 0 0 0 4px rgba(255,31,142,.35), 0 0 22px rgba(255,31,142,.8), 0 8px 24px rgba(0,0,0,.7); } 50% { box-shadow: 0 0 0 9px rgba(255,31,142,.2), 0 0 38px rgba(255,31,142,1), 0 8px 24px rgba(0,0,0,.7); } }
+  .bajar.oculta { opacity: 0; pointer-events: none; }
+  .bajar svg { width: 26px; height: 26px; animation: rebote 1.2s ease-in-out infinite; }
+  @keyframes rebote { 0%,100% { transform: translateY(-2px); } 50% { transform: translateY(5px); } }
+  @media (prefers-reduced-motion: reduce) { .bajar, .bajar svg { animation: none; } }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
@@ -220,6 +247,11 @@
   </section>
 </main>
 
+<button type="button" class="bajar" id="bajar" aria-label="Bajar hasta el botón para confirmar">
+  <span>Bajá para confirmar</span>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+</button>
+
 <script>
   // ▼▼ Pegá acá la URL de tu Apps Script (termina en /exec) ▼▼
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzDGul6wueJc3Kh7VsQ-KrO42OdopdY7MeluVCb2wUnDqb4v9eqDvMYzHwiSCRo47GENA/exec";
@@ -239,6 +271,20 @@
   const ajustar = (d) => { personas.value = Math.min(10, Math.max(1, (parseInt(personas.value) || 1) + d)); };
   $("menos").addEventListener("click", () => ajustar(-1));
   $("mas").addEventListener("click", () => ajustar(1));
+
+  // Flecha "Bajá para confirmar": se oculta cuando el botón ya se ve
+  const flecha = $("bajar");
+  flecha.addEventListener("click", () => btn.scrollIntoView({ behavior: "smooth", block: "center" }));
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((entradas) => {
+      flecha.classList.toggle("oculta", entradas[0].isIntersecting);
+    }, { threshold: 0.6 }).observe(btn);
+  }
+  // Al terminar el envío, la flecha no tiene sentido
+  const _final = $("final");
+  new MutationObserver(() => { if (_final.classList.contains("visible")) flecha.style.display = "none"; })
+    .observe(_final, { attributes: true, attributeFilter: ["class"] });
+  $("otra").addEventListener("click", () => { flecha.style.display = ""; });
 
   function mostrarFinal(asiste, nombre) {
     const primer = nombre.trim().split(/\s+/)[0];
